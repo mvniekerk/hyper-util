@@ -115,7 +115,8 @@ impl TcpKeepaliveConfig {
         target_os = "aix",
         target_os = "openbsd",
         target_os = "redox",
-        target_os = "solaris"
+        target_os = "solaris",
+        target_vendor = "wasmer"
     )))]
     fn ka_with_interval(ka: TcpKeepalive, interval: Duration, dirty: &mut bool) -> TcpKeepalive {
         *dirty = true;
@@ -126,7 +127,8 @@ impl TcpKeepaliveConfig {
         target_os = "aix",
         target_os = "openbsd",
         target_os = "redox",
-        target_os = "solaris"
+        target_os = "solaris",
+        target_vendor = "wasmer"
     ))]
     fn ka_with_interval(ka: TcpKeepalive, _: Duration, _: &mut bool) -> TcpKeepalive {
         ka // no-op as keepalive interval is not supported on this platform
@@ -754,7 +756,7 @@ fn connect(
     )
     .map_err(ConnectError::m("tcp bind local error"))?;
 
-    #[cfg(unix)]
+    #[cfg(any(unix, target_vendor = "wasmer"))]
     let socket = unsafe {
         // Safety: `from_raw_fd` is only safe to call if ownership of the raw
         // file descriptor is transferred. Since we call `into_raw_fd` on the
